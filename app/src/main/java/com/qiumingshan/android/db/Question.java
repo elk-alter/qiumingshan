@@ -2,9 +2,11 @@ package com.qiumingshan.android.db;
 
 import org.litepal.crud.LitePalSupport;
 
+import java.sql.Blob;
+
 public class Question extends LitePalSupport {
 
-    private int id;
+    private int questionid;
 
     private int q_type;
 
@@ -26,13 +28,11 @@ public class Question extends LitePalSupport {
 
     private String user_answer;
 
-    public int getId() {
-        return id;
-    }
+    private int answertimes;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    private int passtimes;
+
+    private String image;
 
     public int getQ_type() {
         return q_type;
@@ -112,5 +112,37 @@ public class Question extends LitePalSupport {
 
     public void setUser_answer(String user_answer) {
         this.user_answer = user_answer;
+    }
+
+    public int getAnswertimes() {
+        return answertimes;
+    }
+
+    public void setAnswertimes(int answertimes) {
+        this.answertimes = answertimes;
+    }
+
+    public int getPasstimes() {
+        return passtimes;
+    }
+
+    public void setPasstimes(int passtimes) {
+        this.passtimes = passtimes;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public int getQuestionid() {
+        return questionid;
+    }
+
+    public void setQuestionid(int questionid) {
+        this.questionid = questionid;
     }
 }

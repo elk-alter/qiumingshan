@@ -10,7 +10,9 @@ public class UserInfo extends LitePalSupport {
 
     private String password;
 
-    private int perssion;//权限
+    private Double credit;
+
+    private int testtimes;
 
     public int getId() {
         return id;
@@ -36,11 +38,19 @@ public class UserInfo extends LitePalSupport {
         this.password = password;
     }
 
-    public int getPerssion() {
-        return perssion;
+    public Double getCredit() {
+        return credit;
     }
 
-    public void setPerssion(int perssion) {
-        this.perssion = perssion;
+    public void setCredit(Double credit) {
+        this.credit = credit;
+    }
+
+    public int getTesttimes() {
+        return testtimes;
+    }
+
+    public void setTesttimes(int testtimes) {
+        this.testtimes = testtimes;
     }
 }
