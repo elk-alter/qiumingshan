@@ -35,6 +35,7 @@
             android:textSize="24dp" />
 
         <Button
+            android:id="@+id/drop_it"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -105,16 +106,19 @@
         android:layout_weight="1">
 
         <Button
+            android:id="@+id/last_q"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="上一题" />
         <Button
+            android:id="@+id/next_q"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="下一题" />
         <Button
+            android:id="@+id/submit_q"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

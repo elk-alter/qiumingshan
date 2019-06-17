@@ -34,6 +34,17 @@ public class Question extends LitePalSupport {
 
     private String image;
 
+    public Question() {
+
+    }
+    public Question(String title, String optionA, String optionB, String optionC, String optionD) {
+        this.title = title;
+        this.optionA = optionA;
+        this.optionB = optionB;
+        this.optionC = optionC;
+        this.optionD = optionD;
+    }
+
     public int getQ_type() {
         return q_type;
     }

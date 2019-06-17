@@ -1,6 +1,5 @@
 package com.qiumingshan.android;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -11,7 +10,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +17,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import com.qiumingshan.android.db.Question;
+import com.qiumingshan.android.db.Questionset;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,22 +29,17 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
 
-    private Fruit[] fruits = {
-            new Fruit("Apple", R.drawable.apple),
-            new Fruit("Banana", R.drawable.banana),
-            new Fruit("Orange", R.drawable.orange),
-            new Fruit("watermelon", R.drawable.watermelon),
-            new Fruit("Pear", R.drawable.pear),
-            new Fruit("Grape", R.drawable.grape),
-            new Fruit("Pineapple", R.drawable.pineapple),
-            new Fruit("Strawberry", R.drawable.strawberry),
-            new Fruit("Cherry", R.drawable.cherry),
-            new Fruit("Mango", R.drawable.mango)
+    private Questionset[] questionsets = {
+            new Questionset("马路专题", R.drawable.apple),
+            new Questionset("交通指示牌专题", R.drawable.banana),
+            new Questionset("高速专题", R.drawable.orange),
+            new Questionset("信号灯专题", R.drawable.watermelon),
+            new Questionset("交警手势专题", R.drawable.pear)
     };
 
-    private List<Fruit> fruitList = new ArrayList<>();
+    private List<Questionset> QuestionsetList = new ArrayList<>();
 
-    private FruitAdapter adapter;
+    private QuestionsetAdapter adapter;
 
     private SwipeRefreshLayout swipeRefresh;
 
@@ -78,14 +74,15 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Data restored", Toast.LENGTH_SHORT).show();
                     }
                 }).show();
+
             }
         });
 
-        initFruits();
+        initQuestionsets();
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new FruitAdapter(fruitList);
+        adapter = new QuestionsetAdapter(QuestionsetList);
         recyclerView.setAdapter(adapter);
 
         swipeRefresh = findViewById(R.id.swipe_refresh);
@@ -93,14 +90,14 @@ public class MainActivity extends AppCompatActivity {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshFruits();
+                refreshQuestionsets();
             }
         });
 
 
     }
 
-    private void refreshFruits() {
+    private void refreshQuestionsets() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -112,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        initFruits();
+                        initQuestionsets();
                         adapter.notifyDataSetChanged();
                         swipeRefresh.setRefreshing(false);
                     }
@@ -121,12 +118,13 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void initFruits() {
-        fruitList.clear();
-        for (int i = 0; i < 50; i++) {
-            Random random = new Random();
-            int index = random.nextInt(fruits.length);
-            fruitList.add(fruits[index]);
+    private void initQuestionsets() {
+        QuestionsetList.clear();
+        for (int i = 0; i < 5; i++) {
+            //Random random = new Random();
+            //int index = random.nextInt(questionsets.length);
+            //QuestionsetList.add(questionsets[index]);
+            QuestionsetList.add(questionsets[i]);
         }
     }
     @Override

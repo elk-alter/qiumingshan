@@ -12,39 +12,40 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.qiumingshan.android.db.Questionset;
 
 import java.util.List;
 
-public class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.ViewHolder> {
+public class QuestionsetAdapter extends RecyclerView.Adapter<QuestionsetAdapter.ViewHolder> {
     private Context mContext;
-    private List<Fruit> mFruitList;
+    private List<Questionset> mQuestionsetList;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
-        ImageView fruitImage;
-        TextView fruitName;
+        ImageView questionsetImage;
+        TextView questionsetName;
 
         ViewHolder(View view) {
             super(view);
             cardView = (CardView) view;
-            fruitImage = view.findViewById(R.id.fruit_image);
-            fruitName = view.findViewById(R.id.fruit_name);
+            questionsetImage = view.findViewById(R.id.questionset_image);
+            questionsetName = view.findViewById(R.id.questionset_name);
         }
     }
 
-    FruitAdapter(List<Fruit> fruitList) {
-        mFruitList = fruitList;
+    QuestionsetAdapter(List<Questionset> QuestionsetList) {
+        mQuestionsetList = QuestionsetList;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public QuestionsetAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (mContext == null) {
             mContext = parent.getContext();
         }
-        View view = LayoutInflater.from(mContext).inflate(R.layout.fruit_item, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.questionset_item, parent, false);
 
-        final ViewHolder holder = new ViewHolder(view);
+        final QuestionsetAdapter.ViewHolder holder = new QuestionsetAdapter.ViewHolder(view);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,14 +58,14 @@ public class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Fruit fruit = mFruitList.get(position);
-        holder.fruitName.setText(fruit.getName());
-        Glide.with(mContext).load(fruit.getImageId()).into(holder.fruitImage);
+    public void onBindViewHolder(@NonNull QuestionsetAdapter.ViewHolder holder, int position) {
+        Questionset questionset = mQuestionsetList.get(position);
+        holder.questionsetName.setText(questionset.getProblemsetName());
+        Glide.with(mContext).load(questionset.getProblemsetImage()).into(holder.questionsetImage);
     }
 
     @Override
     public int getItemCount() {
-        return mFruitList.size();
+        return mQuestionsetList.size();
     }
 }
