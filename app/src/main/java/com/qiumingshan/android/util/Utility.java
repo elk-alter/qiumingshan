@@ -10,6 +10,9 @@ import com.qiumingshan.android.db.UserInfo;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.LitePal;
+
+import java.util.List;
 
 public class Utility {
 
@@ -104,20 +107,26 @@ public class Utility {
                 for (int i = 0; i < allQuestions.length(); i++) {
                     JSONObject questionObject = allQuestions.getJSONObject(i);
                     Question question = new Question();
-                    question.setQuestionid(questionObject.getInt(""));
-                    question.setQ_type(questionObject.getInt(""));
-                    question.setTitle(questionObject.getString(""));
-                    question.setOptionA(questionObject.getString(""));
-                    question.setOptionB(questionObject.getString(""));
-                    question.setOptionC(questionObject.getString(""));
-                    question.setOptionD(questionObject.getString(""));
-                    question.setTips(questionObject.getString(""));
-                    question.setAnswer(questionObject.getString(""));
-                    question.setExplain(questionObject.getString(""));
-                    question.setUser_answer(questionObject.getString(""));
-                    question.setAnswertimes(questionObject.getInt(""));
-                    question.setPasstimes(questionObject.getInt(""));
-                    question.setImage(questionObject.getString(""));
+                    List<Question> questions = LitePal.findAll(Question.class);
+                    for (int j = 0; j < questions.size(); j++) {
+                        if (questions.get(j).getQuestionid() ==  questionObject.getInt("questionid")) {
+                            questions.get(j).delete();
+                        }
+                    }
+                    question.setQuestionid(questionObject.getInt("questionid"));
+                    question.setQ_type(questionObject.getInt("q_type"));
+                    question.setTitle(questionObject.getString("title"));
+                    question.setOptionA(questionObject.getString("optionA"));
+                    question.setOptionB(questionObject.getString("optionB"));
+                    question.setOptionC(questionObject.getString("optionC"));
+                    question.setOptionD(questionObject.getString("optionD"));
+                  //  question.setTips(questionObject.getString(""));
+                    question.setAnswer(questionObject.getString("answer"));
+               //     question.setExplain(questionObject.getString(""));
+                  //  question.setUser_answer(questionObject.getString(""));
+                    question.setAnswertimes(questionObject.getInt("answertimes"));
+                    question.setPasstimes(questionObject.getInt("passtimes"));
+                //    question.setImage(questionObject.getString(""));
                     question.save();
                 }
                 return true;

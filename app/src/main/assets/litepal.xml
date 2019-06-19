@@ -35,6 +35,7 @@
         <mapping class="com.qiumingshan.android.db.UserInfo"/>
         <mapping class="com.qiumingshan.android.db.Question"/>
         <mapping class="com.qiumingshan.android.db.Test"/>
+        <mapping class="com.qiumingshan.android.db.Questionset"/>
     </list>
 
     <!--

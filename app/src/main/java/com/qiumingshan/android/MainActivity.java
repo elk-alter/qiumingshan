@@ -1,5 +1,6 @@
 package com.qiumingshan.android;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -13,21 +14,30 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.qiumingshan.android.db.Question;
 import com.qiumingshan.android.db.Questionset;
+import com.qiumingshan.android.util.HttpUtil;
+import com.qiumingshan.android.util.Utility;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
 
     private DrawerLayout mDrawerLayout;
+
+    private ProgressDialog progressDialog;
 
     private Questionset[] questionsets = {
             new Questionset("马路专题", R.drawable.apple),
@@ -47,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -95,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+
     }
 
     private void refreshQuestionsets() {
@@ -139,11 +152,8 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
-            case R.id.backup:
-                Toast.makeText(this, "You clicked Backup", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.delete:
-                Toast.makeText(this, "You clicked Delete", Toast.LENGTH_SHORT).show();
+                putJSONtoSQL();
                 break;
             case R.id.settings:
                 Toast.makeText(this, "You clicked Settings", Toast.LENGTH_SHORT).show();
@@ -151,5 +161,54 @@ public class MainActivity extends AppCompatActivity {
             default:
         }
         return true;
+    }
+
+    private void putJSONtoSQL() {
+        showProgressDialog();
+        HttpUtil.sendOkHttpRequest("http://192.168.31.226:8080/JSON/Question.json", new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeProgressDialog();
+                        Toast.makeText(MainActivity.this, "加载失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseText = response.body().string();
+                Utility.handleQuestionResponse(responseText);
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeProgressDialog();
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * 显示进度对话框
+     */
+    private void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setMessage("正在加载云端数据...");
+            progressDialog.setCanceledOnTouchOutside(false);
+        }
+        progressDialog.show();
+    }
+
+    /**
+     * 关闭进度对话框
+     */
+    private void closeProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.qiumingshan.android;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,22 +15,25 @@ import android.widget.Toast;
 
 import com.qiumingshan.android.db.Question;
 
+import org.litepal.LitePal;
+import org.litepal.crud.LitePalSupport;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class DoitActivity extends AppCompatActivity{
 
     private int i = 0;
-    private Question[] questions = {
-            new Question("试题1", "昨天", "今天", "明天", "后天"),
-            new Question("试题2", "你玩", "我玩", "你吃", "我吃")
-    };
+    private List<Question> allQuestions = LitePal.findAll(Question.class);
+    private Question[] questions = new Question[allQuestions.size()];
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doit);
 
+        getQuestions();
         showQuestion();
 
         Button drop_it = findViewById(R.id.drop_it);
@@ -102,13 +106,12 @@ public class DoitActivity extends AppCompatActivity{
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(DoitActivity.this, "提交成功", Toast.LENGTH_SHORT).show();
-                        finish();
+                        submit();
                     }
                 });
                 dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                     }
                 });
                 dialog.show();
@@ -159,7 +162,6 @@ public class DoitActivity extends AppCompatActivity{
         rb_option_c.setText("C  " + questions[i].getOptionC());
         rb_option_d.setText("D  " + questions[i].getOptionD());
 
-
     }
 
     //保存做题过程中的结果
@@ -176,7 +178,18 @@ public class DoitActivity extends AppCompatActivity{
         if (result == R.id._rb_option_d) {
             questions[i].setUser_answer("D");
         }
+        questions[i].save();
     }
 
-
+    public void submit() {
+        Intent intent = new Intent(DoitActivity.this, ResultActivity.class);
+        startActivity(intent);
+        Toast.makeText(DoitActivity.this, "提交成功", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+    public void getQuestions() {
+        for (int i = 0; i < allQuestions.size(); i++) {
+            questions[i] = allQuestions.get(i);
+        }
+    }
 }

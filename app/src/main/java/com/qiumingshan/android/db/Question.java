@@ -6,6 +6,7 @@ import java.sql.Blob;
 
 public class Question extends LitePalSupport {
 
+
     private int questionid;
 
     private int q_type;
@@ -37,12 +38,13 @@ public class Question extends LitePalSupport {
     public Question() {
 
     }
-    public Question(String title, String optionA, String optionB, String optionC, String optionD) {
+    public Question(String title, String optionA, String optionB, String optionC, String optionD, String answer) {
         this.title = title;
         this.optionA = optionA;
         this.optionB = optionB;
         this.optionC = optionC;
         this.optionD = optionD;
+        this.answer = answer;
     }
 
     public int getQ_type() {
