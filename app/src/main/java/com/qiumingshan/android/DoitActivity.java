@@ -25,7 +25,7 @@ public class DoitActivity extends AppCompatActivity{
 
     private int i = 0;
     private List<Question> allQuestions = LitePal.findAll(Question.class);
-    private Question[] questions = new Question[allQuestions.size()];
+    private Question[] questions;
 
 
     @Override
@@ -33,6 +33,7 @@ public class DoitActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doit);
 
+        getQuestionsFromQuestionset();
         getQuestions();
         showQuestion();
 
@@ -71,6 +72,7 @@ public class DoitActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 if(i == 0) {
+                    saveResult(rg_base.getCheckedRadioButtonId());
                     Toast.makeText(DoitActivity.this, "已经是第一题了", Toast.LENGTH_SHORT).show();
                 } else {
                     saveResult(rg_base.getCheckedRadioButtonId());
@@ -85,6 +87,7 @@ public class DoitActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 if (i == questions.length - 1) {
+                    saveResult(rg_base.getCheckedRadioButtonId());
                     Toast.makeText(DoitActivity.this, "已经是最后一题了，想要提交吗？", Toast.LENGTH_SHORT).show();
                 } else {
                     saveResult(rg_base.getCheckedRadioButtonId());
@@ -98,6 +101,7 @@ public class DoitActivity extends AppCompatActivity{
         submit_q.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                saveResult(rg_base.getCheckedRadioButtonId());
                 AlertDialog.Builder dialog = new AlertDialog.Builder(DoitActivity.this);
                 dialog.setTitle("确定要提交吗？");
                 dialog.setMessage("提交后将不能继续更改答案。");
@@ -182,7 +186,9 @@ public class DoitActivity extends AppCompatActivity{
     }
 
     public void submit() {
+        Intent lastintent = getIntent();
         Intent intent = new Intent(DoitActivity.this, ResultActivity.class);
+        intent.putExtra("problem", lastintent.getStringExtra("problem"));
         startActivity(intent);
         Toast.makeText(DoitActivity.this, "提交成功", Toast.LENGTH_SHORT).show();
         finish();
@@ -191,5 +197,23 @@ public class DoitActivity extends AppCompatActivity{
         for (int i = 0; i < allQuestions.size(); i++) {
             questions[i] = allQuestions.get(i);
         }
+    }
+
+
+    private void getQuestionsFromQuestionset() {
+        allQuestions.clear();
+        TextView questionset_name = findViewById(R.id.questionset_name);
+        Intent intent = getIntent();
+        //题集名称
+        questionset_name.setText(intent.getStringExtra("name"));
+        String questionID = intent.getStringExtra("problem");
+        String[] id = questionID.split(",");
+        for (int i = 0; i < id.length; i++) {
+            List<Question> questions = LitePal.where("questionid is ?", id[i]).find(Question.class);
+            Question question = questions.get(0);
+            allQuestions.add(question);
+        }
+
+         questions = new Question[allQuestions.size()];
     }
 }

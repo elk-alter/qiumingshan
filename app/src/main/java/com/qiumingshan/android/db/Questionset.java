@@ -6,7 +6,7 @@ public class Questionset extends LitePalSupport {
 
     private int problemsetId;
 
-    private int problemId;
+    private String problemId;
 
     private String problemsetName;
 
@@ -26,11 +26,11 @@ public class Questionset extends LitePalSupport {
         this.problemsetId = problemsetId;
     }
 
-    public int getProblemId() {
+    public String getProblemId() {
         return problemId;
     }
 
-    public void setProblemId(int problemId) {
+    public void setProblemId(String problemId) {
         this.problemId = problemId;
     }
 

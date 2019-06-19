@@ -24,6 +24,8 @@ import com.qiumingshan.android.db.Questionset;
 import com.qiumingshan.android.util.HttpUtil;
 import com.qiumingshan.android.util.Utility;
 
+import org.litepal.LitePal;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,15 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
 
-    private Questionset[] questionsets = {
-            new Questionset("马路专题", R.drawable.apple),
-            new Questionset("交通指示牌专题", R.drawable.banana),
-            new Questionset("高速专题", R.drawable.orange),
-            new Questionset("信号灯专题", R.drawable.watermelon),
-            new Questionset("交警手势专题", R.drawable.pear)
-    };
-
-    private List<Questionset> QuestionsetList = new ArrayList<>();
+    private List<Questionset> QuestionsetList = LitePal.findAll(Questionset.class);
 
     private QuestionsetAdapter adapter;
 
@@ -89,11 +83,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        initQuestionsets();
+        setImage();
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new QuestionsetAdapter(QuestionsetList);
+        adapter = new QuestionsetAdapter(QuestionsetList, MainActivity.this);
         recyclerView.setAdapter(adapter);
 
         swipeRefresh = findViewById(R.id.swipe_refresh);
@@ -104,25 +98,27 @@ public class MainActivity extends AppCompatActivity {
                 refreshQuestionsets();
             }
         });
-
-
-
-
     }
 
+    private void setImage() {
+        for (int i = 0; i < QuestionsetList.size(); i++) {
+            QuestionsetList.get(i).setProblemsetImage(R.drawable.apple);
+        }
+    }
     private void refreshQuestionsets() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        initQuestionsets();
+                        //TODO
+                        //putJSONtoSQLforQuestionset();
                         adapter.notifyDataSetChanged();
                         swipeRefresh.setRefreshing(false);
                     }
@@ -131,15 +127,6 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void initQuestionsets() {
-        QuestionsetList.clear();
-        for (int i = 0; i < 5; i++) {
-            //Random random = new Random();
-            //int index = random.nextInt(questionsets.length);
-            //QuestionsetList.add(questionsets[index]);
-            QuestionsetList.add(questionsets[i]);
-        }
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar, menu);
@@ -153,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
             case R.id.delete:
-                putJSONtoSQL();
                 break;
             case R.id.settings:
                 Toast.makeText(this, "You clicked Settings", Toast.LENGTH_SHORT).show();
@@ -162,10 +148,10 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-
-    private void putJSONtoSQL() {
-        showProgressDialog();
-        HttpUtil.sendOkHttpRequest("http://192.168.31.226:8080/JSON/Question.json", new Callback() {
+/*
+    //get服务器Questionset
+    private void putJSONtoSQLforQuestionset() {
+        HttpUtil.sendOkHttpRequest("http://192.168.31.226:8080/JSON/Questionset.json", new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 MainActivity.this.runOnUiThread(new Runnable() {
@@ -180,35 +166,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseText = response.body().string();
-                Utility.handleQuestionResponse(responseText);
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        closeProgressDialog();
-                    }
-                });
+                Utility.handleQuestionsetResponse(responseText);
             }
         });
-    }
-
-    /**
-     * 显示进度对话框
-     */
-    private void showProgressDialog() {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(MainActivity.this);
-            progressDialog.setMessage("正在加载云端数据...");
-            progressDialog.setCanceledOnTouchOutside(false);
-        }
-        progressDialog.show();
-    }
-
-    /**
-     * 关闭进度对话框
-     */
-    private void closeProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
+        QuestionsetList = LitePal.findAll(Questionset.class);
+        for (int i = 0; i < QuestionsetList.size(); i++) {
+            QuestionsetList.get(i).setProblemsetImage(R.drawable.apple);
         }
     }
+*/
 }

@@ -81,8 +81,15 @@ public class Utility {
                 for (int i = 0; i < allQuestionsets.length(); i++) {
                     JSONObject questionsetObject = allQuestionsets.getJSONObject(i);
                     Questionset questionset = new Questionset();
+                    List<Questionset> questionsets = LitePal.findAll(Questionset.class);
+                    for (int j = 0; j < questionsets.size(); j++) {
+                        if (questionsets.get(j).getProblemsetId() ==  questionsetObject.getInt("problemsetid")) {
+                            questionsets.get(j).delete();
+                        }
+                    }
                     questionset.setProblemsetId(questionsetObject.getInt("problemsetid"));
-                    questionset.setProblemId(questionsetObject.getInt("problemid"));
+                    questionset.setProblemId(questionsetObject.getString("problemid"));
+                    questionset.setProblemsetName(questionsetObject.getString("problemsetname"));
                     questionset.save();
                 }
                 return true;

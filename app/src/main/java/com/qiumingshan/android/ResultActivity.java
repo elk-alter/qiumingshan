@@ -1,9 +1,11 @@
 package com.qiumingshan.android;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -23,13 +25,14 @@ public class ResultActivity extends AppCompatActivity {
 
     private int i = 0;
     private List<Question> allQuestions = LitePal.findAll(Question.class);
-    private Question[] questions = new Question[allQuestions.size()];
+    private Question[] questions;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
+        getQuestionsFromQuestionset();
         getQuestions();
         showQuestion();
 
@@ -60,25 +63,25 @@ public class ResultActivity extends AppCompatActivity {
         });
 
         //下一题
-        if (i == questions.length - 1) {
-            next_s.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        next_s.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (i == questions.length - 1) {
                     finish();
-                }
-            });
-        } else {
-            next_s.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (i == questions.length - 2) next_s.setText("退出");
+                } else if (i == questions.length - 2) {
+                    next_s.setText("退出");
+                    i++;
+                    showQuestion();
+                } else {
+                    next_s.setText("下一题");
                     i++;
                     showQuestion();
                 }
-            });
-        }
+            }
+        });
     }
 
+    //不允许返回键
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -97,8 +100,9 @@ public class ResultActivity extends AppCompatActivity {
         RadioButton rb_option_b = findViewById(R.id._rb_option_b);
         RadioButton rb_option_c = findViewById(R.id._rb_option_c);
         RadioButton rb_option_d = findViewById(R.id._rb_option_d);
+        TextView tips = findViewById(R.id.tips);
 
-
+        //显示用户选项
         switch (questions[i].getUser_answer()) {
             case "A":
                 tag = 1;
@@ -118,44 +122,46 @@ public class ResultActivity extends AppCompatActivity {
                 break;
         }
 
-
+        //判断正误，显示不同颜色
         if (tag == 1) {
             if (questions[i].getUser_answer().equals(questions[i].getAnswer())) {
-                rb_option_a.setBackgroundColor(Color.parseColor("#c7c7c7"));
-            } else {
                 rb_option_a.setBackgroundColor(Color.parseColor("#ffc1e3"));
+            } else {
+                rb_option_a.setBackgroundColor(Color.parseColor("#c7c7c7"));
             }
             rb_option_b.setBackgroundColor(Color.WHITE);
             rb_option_c.setBackgroundColor(Color.WHITE);
             rb_option_d.setBackgroundColor(Color.WHITE);
         } else if (tag == 2) {
             if (questions[i].getUser_answer().equals(questions[i].getAnswer())) {
-                rb_option_b.setBackgroundColor(Color.parseColor("#c7c7c7"));
-            } else {
                 rb_option_b.setBackgroundColor(Color.parseColor("#ffc1e3"));
+                tips.setText(questions[i].getAnswer() + questions[i].getUser_answer());
+            } else {
+                rb_option_b.setBackgroundColor(Color.parseColor("#c7c7c7"));
             }
             rb_option_a.setBackgroundColor(Color.WHITE);
             rb_option_c.setBackgroundColor(Color.WHITE);
             rb_option_d.setBackgroundColor(Color.WHITE);
         } else if (tag == 3) {
             if (questions[i].getUser_answer().equals(questions[i].getAnswer())) {
-                rb_option_c.setBackgroundColor(Color.parseColor("#c7c7c7"));
-            } else {
                 rb_option_c.setBackgroundColor(Color.parseColor("#ffc1e3"));
+            } else {
+                rb_option_c.setBackgroundColor(Color.parseColor("#c7c7c7"));
             }
             rb_option_a.setBackgroundColor(Color.WHITE);
             rb_option_b.setBackgroundColor(Color.WHITE);
             rb_option_d.setBackgroundColor(Color.WHITE);
         } else if (tag == 4) {
             if (questions[i].getUser_answer().equals(questions[i].getAnswer())) {
-                rb_option_d.setBackgroundColor(Color.parseColor("#c7c7c7"));
-            } else {
                 rb_option_d.setBackgroundColor(Color.parseColor("#ffc1e3"));
+            } else {
+                rb_option_d.setBackgroundColor(Color.parseColor("#c7c7c7"));
             }
             rb_option_a.setBackgroundColor(Color.WHITE);
             rb_option_b.setBackgroundColor(Color.WHITE);
             rb_option_c.setBackgroundColor(Color.WHITE);
         }
+
         result_title.setText(questions[i].getTitle());
         rb_option_a.setText("A  " + questions[i].getOptionA());
         rb_option_b.setText("B  " + questions[i].getOptionB());
@@ -163,9 +169,24 @@ public class ResultActivity extends AppCompatActivity {
         rb_option_d.setText("D  " + questions[i].getOptionD());
     }
 
+    //从List中获取每一个Question
     public void getQuestions() {
         for (int i = 0; i < allQuestions.size(); i++) {
             questions[i] = allQuestions.get(i);
         }
+    }
+
+    private void getQuestionsFromQuestionset() {
+        allQuestions.clear();
+        Intent intent = getIntent();
+        //题集名称
+        String questionID = intent.getStringExtra("problem");
+        String[] id = questionID.split(",");
+        for (int i = 0; i < id.length; i++) {
+            List<Question> questions = LitePal.where("questionid is ?", id[i]).find(Question.class);
+            Question question = questions.get(0);
+            allQuestions.add(question);
+        }
+        questions = new Question[allQuestions.size()];
     }
 }
