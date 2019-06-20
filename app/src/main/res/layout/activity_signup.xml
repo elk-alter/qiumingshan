@@ -39,7 +39,7 @@
             android:layout_marginTop="8dp">
 
             <EditText
-                android:id="@+id/input_name"
+                android:id="@+id/input_name_signup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="账号"
@@ -54,7 +54,7 @@
             android:layout_marginTop="8dp">
 
             <EditText
-                android:id="@+id/input_password"
+                android:id="@+id/input_password_signup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="密码"
@@ -69,7 +69,7 @@
             android:layout_marginTop="8dp">
 
             <EditText
-                android:id="@+id/input_reEnterPassword"
+                android:id="@+id/input_reEnterPassword_signup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="重复密码"

@@ -63,7 +63,6 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, "onClick: " + input_username.getText().toString());
                 Log.d(TAG, "onClick: "+ TextUtils.isEmpty(input_username.getText()) + TextUtils.isEmpty(input_password.getText()));
                 if (!TextUtils.isEmpty(input_username.getText()) && !TextUtils.isEmpty(input_password.getText())) {
-
                     putJSONtoSQLforQuestionset();
                     userInfos = LitePal.where("username is ?", input_username.getText().toString()).find(UserInfo.class);
                     if (!userInfos.isEmpty()) {
