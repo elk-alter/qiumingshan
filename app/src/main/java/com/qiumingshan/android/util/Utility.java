@@ -28,10 +28,16 @@ public class Utility {
                 for (int i = 0; i < allUserInfos.length(); i++) {
                     JSONObject userInfoObject = allUserInfos.getJSONObject(i);
                     UserInfo userInfo = new UserInfo();
+                    List<UserInfo> userInfos = LitePal.findAll(UserInfo.class);
+                    for (int j = 0; j < userInfos.size(); j++) {
+                        if (userInfos.get(j).getUserName() ==  userInfoObject.getString("username")) {
+                            userInfos.get(j).delete();
+                        }
+                    }
                     userInfo.setUserName(userInfoObject.getString("username"));
                     userInfo.setPassword(userInfoObject.getString("password"));
-                    userInfo.setCredit(userInfoObject.getDouble("credit"));
-                    userInfo.setTesttimes(userInfoObject.getInt("testtimes"));
+                 //   userInfo.setCredit(userInfoObject.getDouble("credit"));
+                 //   userInfo.setTesttimes(userInfoObject.getInt("testtimes"));
                     userInfo.save();
                 }
                 return true;

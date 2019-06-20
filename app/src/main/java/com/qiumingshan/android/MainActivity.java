@@ -1,6 +1,7 @@
 package com.qiumingshan.android;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -18,9 +19,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qiumingshan.android.db.Questionset;
+import com.qiumingshan.android.db.UserInfo;
 import com.qiumingshan.android.util.HttpUtil;
 import com.qiumingshan.android.util.Utility;
 
@@ -52,10 +55,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.d(TAG, "onCreate: " + QuestionsetList);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navView = findViewById(R.id.nav_view);
+        View view = navView.getHeaderView(0);
+
+        //在侧边栏显示username
+        TextView username = view.findViewById(R.id.username);
+        Intent intent = getIntent();
+        Log.d(TAG, "onCreate: "+intent.getIntExtra("userid", 0));
+        String s = LitePal.find(UserInfo.class, intent.getIntExtra("userid", 0)).getUserName();
+        Log.d(TAG, "onCreate: " + s);
+        username.setText(s);
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -98,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 refreshQuestionsets();
             }
         });
+
     }
 
     private void setImage() {
@@ -148,31 +163,4 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-/*
-    //get服务器Questionset
-    private void putJSONtoSQLforQuestionset() {
-        HttpUtil.sendOkHttpRequest("http://192.168.31.226:8080/JSON/Questionset.json", new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        closeProgressDialog();
-                        Toast.makeText(MainActivity.this, "加载失败", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String responseText = response.body().string();
-                Utility.handleQuestionsetResponse(responseText);
-            }
-        });
-        QuestionsetList = LitePal.findAll(Questionset.class);
-        for (int i = 0; i < QuestionsetList.size(); i++) {
-            QuestionsetList.get(i).setProblemsetImage(R.drawable.apple);
-        }
-    }
-*/
 }
