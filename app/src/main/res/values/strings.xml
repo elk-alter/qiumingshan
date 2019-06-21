@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">秋名山</string>
+    <string name="help_dialog_text">
+        <b>这是一个简易的答题客户端,用Java编写</b>
+        \n
+        \n
+        <b>作者: elk</b>
+        \n
+        \n
+        <b>Github地址:</b>
+        \n
+        \n
+        <a href="https://github.com/nether-shadow/qiumingshan">https://github.com/nether-shadow/qiumingshan</a>
+        \n
+        \n
+        <b>有任何建议或者反馈可以联系作者</b>
+    </string>
 </resources>

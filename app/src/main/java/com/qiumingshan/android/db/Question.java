@@ -1,13 +1,15 @@
 package com.qiumingshan.android.db;
 
+import org.litepal.annotation.Column;
 import org.litepal.crud.LitePalSupport;
 
 import java.sql.Blob;
 
 public class Question extends LitePalSupport {
 
+    private int id;
 
-    private int questionid;
+    private String questionid;
 
     private int q_type;
 
@@ -35,17 +37,7 @@ public class Question extends LitePalSupport {
 
     private String image;
 
-    public Question() {
-
-    }
-    public Question(String title, String optionA, String optionB, String optionC, String optionD, String answer) {
-        this.title = title;
-        this.optionA = optionA;
-        this.optionB = optionB;
-        this.optionC = optionC;
-        this.optionD = optionD;
-        this.answer = answer;
-    }
+    private String favorite;
 
     public int getQ_type() {
         return q_type;
@@ -151,11 +143,27 @@ public class Question extends LitePalSupport {
         this.image = image;
     }
 
-    public int getQuestionid() {
+    public String getQuestionid() {
         return questionid;
     }
 
-    public void setQuestionid(int questionid) {
+    public void setQuestionid(String questionid) {
         this.questionid = questionid;
+    }
+
+    public String getFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(String favorite) {
+        this.favorite = favorite;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

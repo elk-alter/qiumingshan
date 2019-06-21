@@ -54,6 +54,7 @@ public class DoitActivity extends AppCompatActivity{
                 dialog.setPositiveButton("放弃", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        LitePal.deleteAll(Question.class);
                         finish();
                     }
                 });

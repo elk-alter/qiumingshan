@@ -2,19 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_call"
+            android:id="@+id/nav_main"
             android:icon="@drawable/nav_call"
-            android:title="个人信息"/>
+            android:title="主页"/>
         <item
-            android:id="@+id/nav_friends"
+            android:id="@+id/nav_result"
             android:icon="@drawable/nav_friends"
             android:title="我的成绩"/>
         <item
-            android:id="@+id/nav_location"
+            android:id="@+id/nav_error"
             android:icon="@drawable/nav_location"
             android:title="错题集"/>
         <item
-            android:id="@+id/nav_mail"
+            android:id="@+id/nav_about"
             android:icon="@drawable/nav_mail"
             android:title="关于"/>
 

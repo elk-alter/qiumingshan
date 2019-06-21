@@ -1,6 +1,7 @@
 package com.qiumingshan.android.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.qiumingshan.android.db.Question;
 import com.qiumingshan.android.db.Questionset;
@@ -15,6 +16,8 @@ import org.litepal.LitePal;
 import java.util.List;
 
 public class Utility {
+
+    private static final String TAG = "Utility";
 
     /**
      * 解析和处理服务器返回的用户信息
@@ -122,11 +125,15 @@ public class Utility {
                     Question question = new Question();
                     List<Question> questions = LitePal.findAll(Question.class);
                     for (int j = 0; j < questions.size(); j++) {
-                        if (questions.get(j).getQuestionid() ==  questionObject.getInt("questionid")) {
+                        String a=questionObject.getString("questionid");
+                        String b =questions.get(j).getQuestionid();
+                        Log.d(TAG, "handleQuestionResponse: "+ questions.get(j).getQuestionid() +"  " +questionObject.getString("questionid")+"\n");
+                        if (a.equals(b)) {
                             questions.get(j).delete();
+                            Log.d(TAG, "handleQuestionResponse: "+ "成功删除"+"\n");
                         }
                     }
-                    question.setQuestionid(questionObject.getInt("questionid"));
+                    question.setQuestionid(questionObject.getString("questionid"));
                     question.setQ_type(questionObject.getInt("q_type"));
                     question.setTitle(questionObject.getString("title"));
                     question.setOptionA(questionObject.getString("optionA"));
@@ -135,8 +142,9 @@ public class Utility {
                     question.setOptionD(questionObject.getString("optionD"));
                   //  question.setTips(questionObject.getString(""));
                     question.setAnswer(questionObject.getString("answer"));
+                    question.setFavorite(questionObject.getString("favorite"));
                //     question.setExplain(questionObject.getString(""));
-                  //  question.setUser_answer(questionObject.getString(""));
+                    question.setUser_answer(questionObject.getString("useranswer"));
                     question.setAnswertimes(questionObject.getInt("answertimes"));
                     question.setPasstimes(questionObject.getInt("passtimes"));
                 //    question.setImage(questionObject.getString(""));

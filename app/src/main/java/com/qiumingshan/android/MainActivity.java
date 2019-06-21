@@ -1,6 +1,7 @@
 package com.qiumingshan.android;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,17 +12,20 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.qiumingshan.android.db.Question;
 import com.qiumingshan.android.db.Questionset;
 import com.qiumingshan.android.db.UserInfo;
 import com.qiumingshan.android.util.HttpUtil;
@@ -46,7 +50,11 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Questionset> QuestionsetList = LitePal.findAll(Questionset.class);
 
+    private List<Question> QuestionList = LitePal.findAll(Question.class);
+
     private QuestionsetAdapter adapter;
+
+    private ErrorQusetionAdapter errorQusetionAdapter;
 
     private SwipeRefreshLayout swipeRefresh;
 
@@ -54,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        putJSONtoSQL();
 
         Log.d(TAG, "onCreate: " + QuestionsetList);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -75,14 +85,35 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
-        navView.setCheckedItem(R.id.nav_call);
+        navView.setCheckedItem(R.id.nav_main);
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_main:
+                        showMain();
+                        break;
+                    case R.id.nav_result:
+                        break;
+                    case R.id.nav_error:
+                        QuestionList = LitePal.findAll(Question.class);
+                        if (LitePal.where("favorite is ?", "true").find(Question.class).size() != 0) {
+                            QuestionList = LitePal.where("favorite is ?", "true").find(Question.class);
+                            showError();
+                        } else {
+                        Toast.makeText(MainActivity.this, "还没有收藏", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                    case R.id.nav_about:
+                        showAboutAlertDialog();
+                        break;
+                }
                 mDrawerLayout.closeDrawers();
                 return true;
             }
         });
+
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,11 +129,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         setImage();
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 1);
-        recyclerView.setLayoutManager(layoutManager);
-        adapter = new QuestionsetAdapter(QuestionsetList, MainActivity.this);
-        recyclerView.setAdapter(adapter);
+
+        showMain();
 
         swipeRefresh = findViewById(R.id.swipe_refresh);
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
@@ -162,5 +190,93 @@ public class MainActivity extends AppCompatActivity {
             default:
         }
         return true;
+    }
+
+    //显示about信息
+    public void showAboutAlertDialog() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View view = inflater.inflate(R.layout.about, null);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this).setView(view).setTitle("秋名山 1.0");
+        dialog.setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        dialog.show();
+    }
+
+    //主页
+    public void showMain() {
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 1);
+        recyclerView.setLayoutManager(layoutManager);
+
+        adapter = new QuestionsetAdapter(QuestionsetList, MainActivity.this);
+        recyclerView.setAdapter(adapter);
+    }
+
+    //我的成绩
+    public void showReslut() {
+
+    }
+
+    //错题集
+    public void showError() {
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 1);
+        recyclerView.setLayoutManager(layoutManager);
+
+        errorQusetionAdapter = new ErrorQusetionAdapter(QuestionList, MainActivity.this);
+        recyclerView.setAdapter(errorQusetionAdapter);
+    }
+
+    //get服务器Question
+    private void putJSONtoSQL() {
+        showProgressDialog();
+        HttpUtil.sendOkHttpRequest("http://192.168.31.226:8080/JSON/Question.json", new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeProgressDialog();
+                        Toast.makeText(MainActivity.this, "加载失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseText = response.body().string();
+                Utility.handleQuestionResponse(responseText);
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeProgressDialog();
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * 显示进度对话框
+     */
+    private void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setMessage("正在加载云端数据...");
+            progressDialog.setCanceledOnTouchOutside(false);
+        }
+        progressDialog.show();
+    }
+
+    /**
+     * 关闭进度对话框
+     */
+    private void closeProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 }
