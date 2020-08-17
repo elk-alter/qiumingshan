@@ -1,10 +1,24 @@
 # qiumingshan（秋名山）
 
+[![GitHub license](https://img.shields.io/github/license/elk-alter/qiumingshan)](https://github.com/elk-alter/qiumingshan/blob/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/elk-alter/qiumingshan)](https://github.com/elk-alter/qiumingshan/issues)
+[![GitHub forks](https://img.shields.io/github/forks/elk-alter/qiumingshan)](https://github.com/elk-alter/qiumingshan/network)
+[![GitHub stars](https://img.shields.io/github/stars/elk-alter/qiumingshan)](https://github.com/elk-alter/qiumingshan/stargazers)
+
 这是一个驾考答题测试系统，有网页端和安卓端两种客户端，此处仅为Android端Demo源码
 
 使用Bootstrap+Layui
 
 ## 界面
+
+![](https://cdn.jsdelivr.net/gh/elk-alter/qiumingshan@1.0/screenshot/Snipaste_2020-08-17_12-44-11.png)
+![](https://cdn.jsdelivr.net/gh/elk-alter/qiumingshan@1.0/screenshot/Snipaste_2020-08-17_12-46-13.png)
+![](https://cdn.jsdelivr.net/gh/elk-alter/qiumingshan@1.0/screenshot/Snipaste_2020-08-17_12-47-30.png)
+![](https://cdn.jsdelivr.net/gh/elk-alter/qiumingshan@1.0/screenshot/Snipaste_2020-08-17_13-39-09.png)
+![](https://cdn.jsdelivr.net/gh/elk-alter/qiumingshan@1.0/screenshot/Snipaste_2020-08-17_13-39-25.png)
+![](https://cdn.jsdelivr.net/gh/elk-alter/qiumingshan@1.0/screenshot/Snipaste_2020-08-17_13-39-37.png)
+![](https://cdn.jsdelivr.net/gh/elk-alter/qiumingshan@1.0/screenshot/Snipaste_2020-08-17_13-42-02.png)
+![](https://cdn.jsdelivr.net/gh/elk-alter/qiumingshan@1.0/screenshot/Snipaste_2020-08-17_13-42-14.png)
 
 ## 功能列表
 
